@@ -1,19 +1,21 @@
 #
 # ArtifactManager: Download and manage additional data files for your GAP package
 #
-#! @Chapter Introduction
-#!
-#! ArtifactManager is a package which does some
-#! interesting and cool things
-#!
-#! @Chapter Functionality
-#!
-#!
-#! @Section Example Methods
-#!
-#! This section will describe the example
-#! methods of ArtifactManager
+#! @Chapter Manifest API
 
 #! @Description
-#!   Insert documentation for your function here
-DeclareGlobalFunction( "ArtifactManager_Example" );
+#!   Return the validated metadata record for <A>name</A> in <A>manifest</A>.
+DeclareGlobalFunction( "ArtifactMetadata" );
+
+#! @Description
+#!   Return the canonical extracted-tree SHA-256 hash for <A>name</A>.
+DeclareGlobalFunction( "ArtifactHash" );
+
+#! @Description
+#!   Return the validated artifacts declared by <A>manifest</A>.
+DeclareGlobalFunction( "ListArtifacts" );
+
+DeclareGlobalFunction( "ArtifactManager_Error" );
+DeclareGlobalFunction( "ArtifactManager_ReadManifest" );
+DeclareGlobalFunction( "ArtifactManager_ValidateManifest" );
+DeclareGlobalFunction( "ArtifactManager_ResolveArtifact" );
