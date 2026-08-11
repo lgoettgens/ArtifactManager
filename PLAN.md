@@ -66,11 +66,13 @@ return [
 ];
 ```
 
-Version 1 accepts `name`, `tree_sha256`, `lazy`, and `downloads` fields; each
-download record accepts `url` and `sha256`. Unknown fields, duplicate names,
-malformed URLs, and invalid hashes are errors.
-`lazy` defaults to `true`; packages must opt in explicitly to eager bulk
-installation. All declared downloads must be `.tar.gz` archives.
+Version 1 requires exactly the `name`, `tree_sha256`, `lazy`, and `downloads`
+fields on each artifact record; each download record requires exactly `url`
+and `sha256`. Missing fields, unknown fields, duplicate names, malformed URLs,
+and invalid hashes are errors.
+`lazy` is required and must be `true` in the first implementation. Support for
+`lazy := false` and eager bulk installation is added later. All declared
+downloads must be `.tar.gz` archives.
 
 The managed cache retains the verified archive and its extracted data tree.
 `ArtifactPath` returns the extracted directory; later verification can
@@ -84,8 +86,8 @@ documentation and tests.
 
 | Done | Function | Purpose |
 | --- | --- | --- |
-|   | `ArtifactMetadata(name, manifest)` | Resolve and validate one named artifact. |
-|   | `ArtifactHash(name, manifest)` | Return the artifact's expected canonical tree SHA-256 digest. |
+| x | `ArtifactMetadata(name, manifest)` | Resolve and validate one named artifact. |
+| x | `ArtifactHash(name, manifest)` | Return the artifact's expected canonical tree SHA-256 digest. |
 |   | `ArtifactStoreDirectory(manifest)` | Return the configured store directory for this manifest/database, creating it when necessary. |
 |   | `SetArtifactStoreDirectory(manifest, dir)` | Set a per-database store directory for the current GAP session after checking that it is usable. |
 |   | `ArtifactInstallPath(name, manifest)` | Return the deterministic managed-cache path without downloading. |
@@ -96,14 +98,15 @@ documentation and tests.
 |   | `ArtifactFilePath(name, manifest)` | Later milestone: ensure an individual-file artifact is cached, then return its local file path. |
 |   | `FetchArtifact(name, manifest, destination)` | Fetch, unpack, and verify an artifact at `destination` without retaining it in the managed cache. |
 |   | `EnsureAllArtifactsInstalled(manifest[, includeLazy])` | Install all non-lazy artifacts, or all artifacts when requested, and return a report. |
-|   | `ListArtifacts(manifest)` | List declared artifacts with cache status, resolved location, and disk usage. |
+| x | `ListArtifacts(manifest)` | Return declared validated metadata; cache fields are added later. |
 |   | `ArtifactStorageInfo([manifest])` | Report managed stores and their artifact sizes; without an argument, report all stores known to this GAP session. |
 |   | `RemoveArtifact(name, manifest)` | Remove one cached artifact after resolving it and return the reclaimed size. |
 |   | `GarbageCollectArtifacts()` | Remove stale, unreferenced cached artifacts and return a dry-run-capable report. |
 
-`manifest` accepts an absolute `Artifacts.g` path or a package directory.
-Client packages should pass their own root explicitly; ArtifactManager must not
-infer it from the current working directory.
+In the current reader implementation, `manifest` is an `Artifacts.g` filename.
+Step 2 extends this to package directories; client packages must pass their own
+root explicitly, and ArtifactManager must not infer it from the current working
+directory.
 
 ## Internal function inventory
 
@@ -114,9 +117,9 @@ behaviour where feasible.
 | --- | --- | --- |
 |   | `ArtifactManager_ResolveManifest` | Normalize package-directory or manifest input to an absolute manifest filename. |
 |   | `ArtifactManager_ManifestId` | Derive a stable per-database identifier from the client package and manifest path. |
-|   | `ArtifactManager_ReadManifest` | Evaluate a trusted `Artifacts.g` file and return its result. |
-|   | `ArtifactManager_ValidateManifest` | Validate names, types, artifact hashes, download records, and duplicates. |
-|   | `ArtifactManager_ResolveArtifact` | Return one validated artifact metadata record. |
+| x | `ArtifactManager_ReadManifest` | Evaluate a trusted `Artifacts.g` file and return its result. |
+| x | `ArtifactManager_ValidateManifest` | Validate names, types, artifact hashes, download records, and duplicates. |
+| x | `ArtifactManager_ResolveArtifact` | Return one validated artifact metadata record. |
 |   | `ArtifactManager_ResolveStoreDirectory` | Apply per-database configuration, environment/default policy, recursive creation, and writability checks. |
 |   | `ArtifactManager_CreateWritableDirectory` | Create missing parent directories and give actionable permission errors. |
 |   | `ArtifactManager_DownloadMethod` | Select an available registered HTTPS download method. |
@@ -131,7 +134,7 @@ behaviour where feasible.
 |   | `ArtifactManager_RecordReference` | Record a package/manifest reference to an installed artifact for inspection and GC. |
 |   | `ArtifactManager_ScanReferences` | Discover live references from installed packages and persisted records. |
 |   | `ArtifactManager_ArtifactSize` | Calculate an installed artifact tree's disk usage. |
-|   | `ArtifactManager_Error` | Report artifact, manifest, operation, URL, and remediation details. |
+| x | `ArtifactManager_Error` | Report artifact, manifest, operation, URL, and remediation details. |
 
 ## Sequential implementation steps
 
