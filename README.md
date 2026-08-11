@@ -6,14 +6,16 @@ install and use it, resp. where to find out more
 
 ## Contact
 
-TODO: add info on how to contact you and/or how to report issues with your
-package
+Please submit bug reports, suggestions for improvements and patches via
+the [issue tracker](https://github.com/gap-packages/PackageMaker/issues).
+
+You can also contact me directly via [email](mailto:goettgens@art.rwth-aachen.de).
 
 ## License
 
-TODO: Provide information on the license of your package. A license is
-important as it determines who has a right to distribute your package.
-This package is distributed under the terms of the GNU General Public
-License v2.0 or later. This is also the license used by GAP itself and
-by many GAP packages.
+ArtifactManager is free software; you can redistribute and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your opinion) any later version.
+For details, see the file `LICENSE` distributed as part of this package.
 

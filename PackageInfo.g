@@ -10,7 +10,7 @@ SetPackageInfo( rec(
 
 PackageName := "ArtifactManager",
 Subtitle := "Download and manage additional data files for your GAP package",
-Version := "0.1",
+Version := "0.1-DEV",
 Date := "11/08/2026", # dd/mm/yyyy format
 License := "GPL-2.0-or-later",
 
@@ -22,7 +22,13 @@ Persons := [
     Email := "goettgens@art.rwth-aachen.de",
     IsAuthor := true,
     IsMaintainer := true,
-    PostalAddress := "Lehrstuhl für Algebra und Darstellungstheorie",
+    GitHubUsername := "lgoettgens",
+    PostalAddress := Concatenation(
+        "Lehrstuhl für Algebra und Darstellungstheorie\n",
+        "RWTH Aachen University\n",
+        "Pontdriesch 10-16\n",
+        "52062 Aachen\n",
+        "Germany" ),
     Place := "Aachen, Germany",
     Institution := "RWTH Aachen University",
   ),
