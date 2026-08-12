@@ -9,6 +9,22 @@ function( filename, message )
     Error( Concatenation( "ArtifactManager: ", filename, ": ", message ) );
 end );
 
+InstallGlobalFunction( ArtifactManager_ManifestFilename,
+function( pkgname )
+    local dirs, path;
+
+    if not IsString( pkgname ) or Length( pkgname ) = 0 then
+        Error( "ArtifactManager: package name must be a nonempty string" );
+    fi;
+    dirs := DirectoriesPackageLibrary( pkgname, "" );
+    path := Filename( dirs, "Artifacts.g" );
+    if path = fail then
+        Error( Concatenation( "ArtifactManager: package '", pkgname,
+            "' does not have an 'Artifacts.g' file" ) );
+    fi;
+    return path;
+end );
+
 InstallGlobalFunction( ArtifactManager_ReadManifest,
 function( filename )
     if not IsString( filename ) then
@@ -158,33 +174,36 @@ function( filename, entries )
 end );
 
 InstallGlobalFunction( ArtifactManager_ResolveArtifact,
-function( name, artifacts, filename )
+function( pkgname, name, artifacts )
     local artifact;
 
     if not IsString( name ) or Length( name ) = 0 then
-        ArtifactManager_Error( filename, "artifact name must be a nonempty string" );
+        ArtifactManager_Error( pkgname, "artifact name must be a nonempty string" );
     fi;
     artifact := First( artifacts, entry -> entry.name = name );
     if artifact = fail then
-        ArtifactManager_Error( filename,
+        ArtifactManager_Error( pkgname,
             Concatenation( "artifact '", name, "' is not declared" ) );
     fi;
     return artifact;
 end );
 
 InstallGlobalFunction( ListArtifacts,
-function( manifest )
+function( pkgname )
+    local manifest;
+
+    manifest := ArtifactManager_ManifestFilename( pkgname );
     return ArtifactManager_ValidateManifest(
         manifest, ArtifactManager_ReadManifest( manifest ) );
 end );
 
 InstallGlobalFunction( ArtifactMetadata,
-function( name, manifest )
+function( pkgname, name )
     return ArtifactManager_ResolveArtifact(
-        name, ListArtifacts( manifest ), manifest );
+        pkgname, name, ListArtifacts( pkgname ) );
 end );
 
 InstallGlobalFunction( ArtifactHash,
-function( name, manifest )
-    return ArtifactMetadata( name, manifest ).tree_sha256;
+function( pkgname, name )
+    return ArtifactMetadata( pkgname, name ).tree_sha256;
 end );

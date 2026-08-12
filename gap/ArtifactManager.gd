@@ -4,7 +4,7 @@
 #! @Chapter Manifest API
 
 #! @Description
-#!   Return the validated metadata record for <A>name</A> in <A>manifest</A>.
+#!   Return the validated metadata record for <A>name</A>.
 DeclareGlobalFunction( "ArtifactMetadata" );
 
 #! @Description
@@ -12,10 +12,11 @@ DeclareGlobalFunction( "ArtifactMetadata" );
 DeclareGlobalFunction( "ArtifactHash" );
 
 #! @Description
-#!   Return the validated artifacts declared by <A>manifest</A>.
+#!   Return the validated artifacts declared by the package.
 DeclareGlobalFunction( "ListArtifacts" );
 
 DeclareGlobalFunction( "ArtifactManager_Error" );
+DeclareGlobalFunction( "ArtifactManager_ManifestFilename" );
 DeclareGlobalFunction( "ArtifactManager_ReadManifest" );
 DeclareGlobalFunction( "ArtifactManager_ValidateManifest" );
 DeclareGlobalFunction( "ArtifactManager_ResolveArtifact" );
