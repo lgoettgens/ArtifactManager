@@ -1,4 +1,9 @@
 gap> START_TEST( "manifest.tst" );
+
+# Exercise the public package-name API against a real package-shaped fixture.
+# This catches regressions where the manifest reader accidentally accepts only
+# raw Artifacts.g filenames instead of resolving them through GAP's package
+# directory machinery.
 gap> testpackagepath := DirectoriesPackageLibrary("ArtifactManager", "tst/fixtures/pkg/TestPackage")[1];;
 gap> testpkgname := "TestPackage";;
 gap> Unbind(GAPInfo.PackagesInfo.(testpkgname));;
@@ -17,8 +22,15 @@ gap> ArtifactMetadata( testpkgname, "brent-table-1000" ).downloads[ 2 ].url;
 "https://mirror.example.org/data/brent-table-1000.tar.gz"
 gap> ArtifactHash( testpkgname, "brent-table-2000" );
 "1111111111111111111111111111111111111111111111111111111111111111"
+
+# Missing artifacts should be reported in terms of the client package name,
+# because callers do not pass or usually know the resolved manifest filename.
 gap> ArtifactMetadata( testpkgname, "does-not-exist" );
 Error, ArtifactManager: TestPackage: artifact 'does-not-exist' is not declared
+
+# The remaining checks call the lower-level manifest reader and validator
+# directly. They keep schema failures focused on the fixture filename while the
+# public API stays package-oriented.
 gap> invalidManifest := Filename( DirectoriesPackageLibrary( "ArtifactManager", "tst/fixtures" ), "invalid-tree-sha256.g" );;
 gap> ArtifactManager_ValidateManifest( invalidManifest, ArtifactManager_ReadManifest( invalidManifest ) );
 Error, ArtifactManager: ./tst/fixtures/invalid-tree-sha256.g: artifact 'bad' h\
