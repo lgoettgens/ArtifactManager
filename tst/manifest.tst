@@ -1,5 +1,12 @@
 gap> START_TEST( "manifest.tst" );
 
+# The shared error helper can report package-qualified errors, but callers that
+# have no stable context should produce a path-independent message.
+gap> ArtifactManager_Error( "message without context" );
+Error, ArtifactManager: message without context
+gap> ArtifactManager_Error( "", "message with empty context" );
+Error, ArtifactManager: message with empty context
+
 # Exercise the public package-name API against a real package-shaped fixture.
 # This catches regressions where the manifest reader accidentally accepts only
 # raw Artifacts.g filenames instead of resolving them through GAP's package

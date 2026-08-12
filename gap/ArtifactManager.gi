@@ -5,11 +5,24 @@
 #
 
 InstallGlobalFunction( ArtifactManager_Error,
-function( context, message )
-    if not IsString( context ) or Length( context ) = 0 then
-        context := "unknown context";
+function( arg )
+    local context, message;
+
+    if Length( arg ) = 1 then
+        context := "";
+        message := arg[ 1 ];
+    elif Length( arg ) = 2 then
+        context := arg[ 1 ];
+        message := arg[ 2 ];
+    else
+        Error( "ArtifactManager: internal error helper called with invalid number of arguments" );
     fi;
-    Error( Concatenation( "ArtifactManager: ", context, ": ", message ) );
+
+    if IsString( context ) and Length( context ) > 0 then
+        Error( Concatenation( "ArtifactManager: ", context, ": ", message ) );
+    else
+        Error( Concatenation( "ArtifactManager: ", message ) );
+    fi;
 end );
 
 InstallGlobalFunction( ArtifactManager_ManifestFilename,
@@ -17,13 +30,12 @@ function( pkgname )
     local dirs, path;
 
     if not IsString( pkgname ) or Length( pkgname ) = 0 then
-        Error( "ArtifactManager: package name must be a nonempty string" );
+        ArtifactManager_Error( "package name must be a nonempty string" );
     fi;
     dirs := DirectoriesPackageLibrary( pkgname, "" );
     path := Filename( dirs, "Artifacts.g" );
     if path = fail then
-        Error( Concatenation( "ArtifactManager: package '", pkgname,
-            "' does not have an 'Artifacts.g' file" ) );
+        ArtifactManager_Error( pkgname, "does not have an 'Artifacts.g' file" );
     fi;
     return path;
 end );
@@ -31,7 +43,7 @@ end );
 InstallGlobalFunction( ArtifactManager_ReadManifest,
 function( filename )
     if not IsString( filename ) then
-        Error( "ArtifactManager: manifest filename must be a string" );
+        ArtifactManager_Error( "manifest filename must be a string" );
     fi;
     if IsExistingFile( filename ) <> true then
         ArtifactManager_Error( filename, "manifest file does not exist" );
