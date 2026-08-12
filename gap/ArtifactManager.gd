@@ -3,6 +3,8 @@
 #
 #! @Chapter Manifest API
 
+#! @Section Public manifest functions
+
 #! @Description
 #!   Return the validated metadata record for <A>name</A>.
 DeclareGlobalFunction( "ArtifactMetadata" );
