@@ -29,7 +29,7 @@ gap> ArtifactMetadata( testpkgname, "does-not-exist" );
 Error, ArtifactManager: TestPackage: artifact 'does-not-exist' is not declared
 
 # The remaining checks call the lower-level manifest reader and validator
-# directly, but still pass a package label as the error context. That keeps
+# directly, but still pass a package name as the error context. That keeps
 # schema failures stable across checkout and CI paths.
 gap> invalidManifest := Filename( DirectoriesPackageLibrary( "ArtifactManager", "tst/fixtures" ), "invalid-tree-sha256.g" );;
 gap> ArtifactManager_ValidateManifest( "ArtifactManager", ArtifactManager_ReadManifest( invalidManifest ) );
